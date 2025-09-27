@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0F111A, #1A1F2B);
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .edit-wrapper {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .edit-title {
+        font-size: 2.3rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #00C6FF, #0072FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
+    }
+
+    .edit-form-container {
+        max-width: 600px;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        padding: 2rem;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .edit-form-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #00C6FF, #0072FF, #8E2DE2, #4A00E0);
+        background-size: 300% 100%;
+        animation: gradientMove 3s ease infinite;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .form-label {
+        color: #CBD5E0;
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: inline-block;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #E2E8F0;
+        border-radius: 10px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #00C6FF;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 0.2rem rgba(0, 198, 255, 0.25);
+    }
+
+    .btn-admin {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-admin::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+        transition: left 0.4s;
+    }
+
+    .btn-admin:hover::before {
+        left: 100%;
+    }
+
+    .btn-admin:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 198, 255, 0.3);
+    }
+
+    .btn-admin:active {
+        transform: translateY(0);
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #22c55e, #15803d);
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    }
+
+    .btn-cancel {
+        background: linear-gradient(135deg, #4B5563, #374151);
+        box-shadow: 0 4px 15px rgba(75, 85, 99, 0.3);
+    }
+
+    .btn-cancel:hover {
+        box-shadow: 0 8px 25px rgba(75, 85, 99, 0.4);
+    }
+
+    @media (max-width: 576px) {
+        .edit-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .edit-form-container {
+            padding: 1.5rem;
+            margin: 0 15px;
+        }
+        .btn-group {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .btn-admin {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="edit-wrapper">
+    <h2 class="edit-title">Edit Parking Lot</h2>
+
+    <form method="POST" class="edit-form-container">
+        <div class="mb-3">
+            <label for="prime_location" class="form-label">Prime Location</label>
+            <input type="text" id="prime_location" class="form-control" name="prime_location" value="{{ lot.prime_location }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea id="address" class="form-control" name="address" rows="2" required>{{ lot.address }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="pincode" class="form-label">Pincode</label>
+            <input type="text" id="pincode" class="form-control" name="pincode" value="{{ lot.pincode }}" required pattern="\d{6}">
+        </div>
+        <div class="mb-3">
+            <label for="price_per_hour" class="form-label">Price per Hour (₹)</label>
+            <input type="number" id="price_per_hour" class="form-control" step="0.1" name="price_per_hour" value="{{ lot.price_per_hour }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="total_spots" class="form-label">Total Spots</label>
+            <input type="number" id="total_spots" class="form-control" name="total_spots" value="{{ lot.total_spots }}" required min="1">
+        </div>
+
+        <div class="d-flex justify-content-end btn-group gap-3 mt-4">
+            <a href="{{ url_for('admin_bp.view_parking_lots') }}" class="btn-admin btn-cancel">Cancel</a>
+            <button type="submit" class="btn-admin btn-save">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

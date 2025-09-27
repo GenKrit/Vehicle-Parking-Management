@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+    }
+
+    .container.my-4 {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    }
+
+    .login-wrapper {
+        min-height: calc(100vh - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .login-box {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 35px 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2);
+        width: 100%;
+        max-width: 380px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 300% 300%;
+        animation: login-gradient 3s ease infinite;
+    }
+
+    @keyframes login-gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .login-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .login-subtitle {
+        font-size: 0.95rem;
+        color: #6c757d;
+        margin-top: 6px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .form-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #495057;
+        margin-bottom: 8px;
+        display: inline-block;
+    }
+
+    .form-control {
+        padding: 12px 18px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 1rem;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        background: #fff;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #adb5bd;
+        font-size: 1.1rem;
+        pointer-events: none;
+    }
+
+    .form-control:focus + .input-icon {
+        color: #667eea;
+    }
+
+    .btn-user {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        width: 100%;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-user::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-user:hover::before {
+        left: 100%;
+    }
+
+    .btn-user:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-user:active {
+        transform: translateY(0);
+    }
+
+    .register-link {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 18px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .register-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .register-link a::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -3px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        transition: width 0.3s ease;
+    }
+
+    .register-link a:hover::after {
+        width: 100%;
+    }
+
+    .register-link a:hover {
+        color: #764ba2;
+    }
+
+    @media (max-width: 480px) {
+        .login-box {
+            padding: 30px 20px;
+            max-width: 320px;
+            margin: 0 15px;
+        }
+
+        .form-control {
+            padding: 10px 15px;
+        }
+
+        .btn-user {
+            padding: 10px 25px;
+        }
+
+        .login-title {
+            font-size: 1.6rem;
+        }
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-box">
+        <div class="login-header">
+            <h2 class="login-title">Welcome Back</h2>
+            <p class="login-subtitle">Sign in to your account</p>
+        </div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <div>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="Enter your email">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div>
+                    <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-user">Sign In</button>
+        </form>
+
+        <div class="register-link">
+            <p style="margin: 0; color: #6c757d;">Don't have an account?
+                <a href="{{ url_for('user_bp.register') }}">Create one here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

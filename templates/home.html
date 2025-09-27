@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-layout-container">
+
+  <!-- Background Layers -->
+  <div class="bg-visual-layer"></div>
+  <div class="bg-gradient-overlay-dim"></div>
+  <div class="bg-pattern-overlay"></div>
+
+  <!-- Centered Main Content -->
+  <div class="main-content-area d-flex flex-column justify-content-center align-items-center">
+    <div class="content-wrapper text-center text-white p-4 p-md-5">
+      <img src="/static/images/logo.png" alt="Parking Logo" class="mb-3 logo-static" width="100">
+
+      <h1 class="app-title fw-bolder mb-2">
+        <span class="emoji-static-glow">🚗</span><span class="text-accent">PAVE</span> Parking Navigator
+      </h1>
+
+      <p class="app-tagline lead mb-4">
+        Find, book, and manage your parking spot effortlessly.
+      </p>
+
+      <div class="action-buttons d-flex flex-wrap justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('user_bp.login') }}" class="btn-futuristic user-login-btn">
+          <span class="btn-icon">➡️</span> User Login
+        </a>
+        <a href="{{ url_for('user_bp.register') }}" class="btn-futuristic user-register-btn">
+          <span class="btn-icon">✨</span> Register Now
+        </a>
+        <a href="{{ url_for('admin_bp.admin_login') }}" class="btn-futuristic admin-login-btn">
+          <span class="btn-icon">🔐</span> Admin Portal
+        </a>
+      </div>
+
+      <p class="text-muted mt-4 small">© {{ 2025 }} Vehicle Parking System | Built with 🚀 by Shashwat</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .container.my-4 {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .main-layout-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  .bg-visual-layer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: url("{{ url_for('static', filename='images/bg_image.png') }}") center center / cover no-repeat;
+    filter: brightness(0.5) grayscale(0.1);
+    z-index: -3;
+  }
+
+  .bg-gradient-overlay-dim {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    z-index: -2;
+  }
+
+  .bg-pattern-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM12 6v-4h-2v4H6v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4H6v2h4v4h2v-4h4v-2h-4zm0 20v-4h-2v4H6v2h4v4h2v-4h4v-2h-4zM36 6v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    opacity: 0.1;
+    z-index: -1;
+  }
+
+  .main-content-area {
+    height: calc(100vh - 65px); /* Subtract navbar height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .content-wrapper {
+    backdrop-filter: blur(20px) brightness(0.9);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 1.5rem;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.5);
+    max-width: 850px;
+    width: 90%;
+    padding: 2rem 3rem;
+  }
+
+  .logo-static {
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+  }
+
+  .app-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow: 0 0 15px #00F7FF;
+  }
+
+  .emoji-static-glow {
+    filter: drop-shadow(0 0 12px #00F7FF);
+  }
+
+  .text-accent {
+    color: #00F7FF;
+  }
+
+  .app-tagline {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    color: #b0b0b0;
+    max-width: 600px;
+    margin: auto;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .action-buttons {
+    margin-top: 2rem;
+    gap: 1rem;
+  }
+
+  .btn-futuristic {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    border: none;
+    text-decoration: none;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
+    transition: all 0.3s ease-in-out;
+    text-transform: capitalize;
+  }
+
+  .btn-futuristic::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    transition: all 0.6s ease-out;
+  }
+
+  .btn-futuristic:hover::before {
+    left: 100%;
+  }
+
+  .btn-futuristic:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  }
+
+  /* Button Themes */
+  .user-login-btn { background: linear-gradient(135deg, #007bff, #0056b3); }
+  .user-register-btn { background: linear-gradient(135deg, #28a745, #1e7e34); }
+  .admin-login-btn { background: linear-gradient(135deg, #6c757d, #343a40); }
+
+  .btn-icon {
+    margin-right: 0.6rem;
+    font-size: 1.3rem;
+  }
+
+  .text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 0.8rem;
+    margin-top: 2rem !important;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,38 @@
+/* styles.css */
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h2, h3 {
+  font-weight: 600;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+button.btn, a.btn {
+  border-radius: 8px;
+}
+
+textarea, input {
+  border-radius: 8px !important;
+
+
+}
+
+body {
+  background: linear-gradient(135deg, #e8f0fe, #ffffff);
+  min-height: 100vh;
+}
+
+.btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+

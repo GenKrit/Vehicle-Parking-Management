@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0F111A 0%, #1A1F2B 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .charts-wrapper {
+        padding: 20px 15px;
+        min-height: calc(100vh - 56px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .chart-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #00C6FF, #0072FF);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
+        text-align: center;
+    }
+
+    .chart-card {
+        background: rgba(255, 255, 255, 0.05);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 20px;
+        height: 350px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .chart-card h5 {
+        color: #CBD5E0;
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .chart-canvas-container {
+        position: relative;
+        width: 100%;
+        height: calc(100% - 2.5rem);
+    }
+
+    .chart-canvas-container canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .btn-admin {
+        border: none;
+        border-radius: 10px;
+        padding: 8px 18px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: white;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 70px;
+    }
+
+    .btn-admin::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+        transition: left 0.4s;
+    }
+
+    .btn-admin:hover::before {
+        left: 100%;
+    }
+
+    .btn-admin:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 198, 255, 0.3);
+    }
+
+    .btn-admin:active {
+        transform: translateY(0);
+    }
+
+    .btn-admin-secondary {
+        background: linear-gradient(135deg, #4B5563, #374151);
+        box-shadow: 0 3px 10px rgba(75, 85, 99, 0.2);
+    }
+
+    .btn-admin-secondary:hover {
+        box-shadow: 0 6px 15px rgba(75, 85, 99, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .chart-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            padding: 15px;
+            height: 300px;
+        }
+
+        .chart-card h5 {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+    }
+</style>
+
+<div class="charts-wrapper">
+    <h2 class="chart-title">Admin Charts</h2>
+
+    <div class="row mb-5 w-100">
+        <div class="col-md-8 mb-4">
+            <div class="chart-card">
+                <h5>Earnings Over Time (₹)</h5>
+                <div class="chart-canvas-container">
+                    <canvas id="earningsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="chart-card">
+                <h5>Spot Occupancy</h5>
+                <div class="chart-canvas-container">
+                    <canvas id="occupancyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{{ url_for('admin_bp.admin_dashboard') }}" class="btn-admin btn-admin-secondary mt-4">← Back to Dashboard</a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const earningsLabels = {{ dates | tojson | safe }};
+const earningsData = {{ totals | tojson | safe }};
+const occupancyData = {{ [occupied, available] | tojson | safe }};
+
+const commonChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+        legend: {
+            labels: { color: '#CBD5E0' }
+        },
+        tooltip: {
+            backgroundColor: 'rgba(30, 30, 30, 0.9)',
+            titleColor: '#00C6FF',
+            bodyColor: '#E2E8F0',
+            borderColor: 'rgba(0, 198, 255, 0.5)',
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: true,
+        }
+    },
+    scales: {
+        x: {
+            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+            ticks: { color: '#A0AEC0' }
+        },
+        y: {
+            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+            ticks: { color: '#A0AEC0' },
+            beginAtZero: true,
+            title: {
+                display: true,
+                text: '₹ Rupees',
+                color: '#CBD5E0'
+            }
+        }
+    }
+};
+
+new Chart(document.getElementById('earningsChart').getContext('2d'), {
+    type: 'line',
+    data: {
+        labels: earningsLabels,
+        datasets: [{
+            label: 'Earnings (₹)',
+            data: earningsData,
+            borderColor: '#00C6FF',
+            backgroundColor: 'rgba(0, 198, 255, 0.15)',
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#00C6FF',
+            pointBorderColor: '#00C6FF',
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }]
+    },
+    options: commonChartOptions
+});
+
+new Chart(document.getElementById('occupancyChart').getContext('2d'), {
+    type: 'pie',
+    data: {
+        labels: ['Occupied', 'Available'],
+        datasets: [{
+            data: occupancyData,
+            backgroundColor: ['#EF4444', '#00C6FF'],
+            borderColor: 'rgba(255, 255, 255, 0.1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: { color: '#CBD5E0' }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(30, 30, 30, 0.9)',
+                titleColor: '#00C6FF',
+                bodyColor: '#E2E8F0',
+                borderColor: 'rgba(0, 198, 255, 0.5)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                displayColors: true,
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

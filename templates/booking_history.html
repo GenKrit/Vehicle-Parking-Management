@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    html, body {
+        height: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .main-content-wrapper {
+        min-height: calc(100vh - 56px);
+        display: block;
+        padding: 20px 15px;
+        box-sizing: border-box;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+        overflow-y: auto;
+    }
+
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+        text-align: left;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .table-container {
+        width: 100%;
+        padding: 25px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: #fff;
+    }
+
+    .custom-table thead {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .custom-table th, .custom-table td {
+        padding: 12px 15px;
+        font-size: 0.95rem;
+    }
+
+    .custom-table th {
+        font-weight: 600;
+        color: #e0e0e0;
+        text-transform: uppercase;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .custom-table tbody tr {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s ease;
+    }
+
+    .custom-table tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .custom-table td:last-child {
+        border-right: none;
+    }
+
+    .status-active {
+        color: #FFD700;
+        font-weight: 500;
+    }
+
+    .chart-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 20px;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chart-card h4 {
+        color: #fff;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem;
+    }
+
+    .chart-canvas-container {
+        width: 100%;
+        height: calc(100% - 2.5rem);
+    }
+
+    .chart-canvas-container canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .no-data-message {
+        color: #fff;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-user-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #fff;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-user-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+        .custom-table th, .custom-table td {
+            font-size: 0.85rem;
+        }
+        .chart-card {
+            min-height: 250px;
+        }
+    }
+</style>
+
+<div class="main-content-wrapper">
+    <h2 class="page-title">My Booking History</h2>
+
+    {% if bookings %}
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Vehicle</th>
+                    <th>Spot</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Cost (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td>{{ b.vehicle_number }}</td>
+                    <td>{{ b.spot_id }}</td>
+                    <td>{{ b.start_time.strftime('%d %b %Y %I:%M %p') }}</td>
+                    <td>
+                        {% if b.end_time %}
+                            {{ b.end_time.strftime('%d %b %Y %I:%M %p') }}
+                        {% else %}
+                            <span class="status-active">Active</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if b.total_cost is not none %}
+                            ₹{{ "%.2f"|format(b.total_cost) }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <hr style="border-color: rgba(255, 255, 255, 0.2); margin: 3rem 0;">
+
+    <div class="row w-100 mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="chart-card">
+                <h4>Cost per Booking</h4>
+                <div class="chart-canvas-container">
+                    <canvas id="costChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="chart-card">
+                <h4>Cost Distribution (Pie)</h4>
+                <div class="chart-canvas-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <p class="no-data-message">No bookings yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="application/json" id="labels-data">{{ labels | tojson }}</script>
+<script type="application/json" id="costs-data">{{ costs | tojson }}</script>
+
+<script>
+    const labels = JSON.parse(document.getElementById("labels-data").textContent);
+    const costs = JSON.parse(document.getElementById("costs-data").textContent);
+
+    const commonChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                labels: { color: '#e0e0e0' }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(102, 126, 234, 0.9)',
+                titleColor: '#fff',
+                bodyColor: '#e0e0e0',
+                borderColor: 'rgba(240, 147, 251, 0.5)',
+                borderWidth: 1,
+                cornerRadius: 8,
+                displayColors: true
+            }
+        },
+        scales: {
+            x: {
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#e0e0e0' }
+            },
+            y: {
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#e0e0e0' },
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Rupees',
+                    color: '#fff'
+                }
+            }
+        }
+    };
+
+    new Chart(document.getElementById('costChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Total Cost (₹)',
+                data: costs,
+                backgroundColor: 'rgba(240, 147, 251, 0.6)',
+                borderColor: '#f093fb',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: commonChartOptions
+    });
+
+    new Chart(document.getElementById('pieChart').getContext('2d'), {
+        type: 'pie',
+        data: {
+            labels,
+            datasets: [{
+                data: costs,
+                backgroundColor: [
+                    '#f093fb', '#667eea', '#ff57a6', '#764ba2',
+                    '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40',
+                    '#66D9EF', '#FF6B6B', '#00C851', '#FFBB33'
+                ],
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                borderWidth: 1,
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#e0e0e0' }
+                },
+                tooltip: commonChartOptions.plugins.tooltip
+            }
+        }
+    });
+</script>
+{% endblock %}
