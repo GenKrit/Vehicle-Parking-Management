@@ -43,7 +43,6 @@ A responsive web-based parking management system built using **Flask** and **Boo
 │ ├── user_login.html
 │ ├── register.html
 │ └── ...
-│
 ├── static/ # Custom CSS, JS, logo etc.
 │ └── ...
 
