@@ -27,10 +27,10 @@ A responsive web-based parking management system built using **Flask** and **Boo
 ---
 
 ## 🗂️ Folder Structure
-'''
-project-root/
-├── app.py # Main entry point
-├── requirements.txt # Python dependencies
+
+```project-root/```
+```├── app.py # Main entry point```
+```├── requirements.txt # Python dependencies```
 ├── README.md # Project documentation
 ├── controllers/
 │ ├── admin_routes.py # Admin routes and views
