@@ -20,6 +20,10 @@ A responsive web-based parking management system built using **Flask** and **Boo
 - View all users and bookings
 - Earnings and occupancy charts
 
+### Admin Login
+- Email: admin@admin.com  
+- Password: admin123  
+
 ---
 
 ## 🗂️ Folder Structure
